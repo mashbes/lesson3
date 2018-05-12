@@ -1,13 +1,25 @@
 import numpy as np
-from random import randint
+import random
+import curses
+
+def board():
+    curses.initscr()
+    curses.noecho()
+    win = curses.newwin(270, 270, 0, 0)
+    win.border(0)
+
 
 class Game:
-    def __init__(self, row=4, column=4, initial=2):
+    def __init__(self, row=4, col=4):
         self.row = row
-        self.column = column
+        self.col = col
         self.score = 0
-        self.initial = initial
-        self.field = np.array([[0 for j in range(self.row)] for i in range(self.column)])
+        self.field = np.array([[0 for col in range(self.row)] for row in range(self.col)])
+
+    def swap(self, row, col, route):
+        tmp_value = self.field[row][col]
+        self.field[row + route][col] = tmp_value
+        self.field[row][col] = 0
 
     def move_left(self):
         self.field = self.field.transpose()
@@ -88,17 +100,29 @@ class Game:
         return True
 
     def has_moves(self):
-        raise NotImplementedError
+        for row in self.field:
+            for cell in row:
+                if cell == 0:
+                    return  True
+        return  False
+
 
     def get_score(self):
         return self.score
 
     def get_field(self):
-        c = 0
-        while c < 2:
-            row = random.randint(0, 3)
-            column = random.randint(0, 3)
-
+        if self.has_moves():
+            count = 0
+            while count < 2:
+                row = random.randint(0, 3)
+                cell = random.randint(0, 3)
+                if self.field[row][cell] == 0:
+                     if random.randint(1,10) < 9:
+                         self.field[row][cell] = 2
+                     else:
+                         self.field[row][cell] = 4
+                     count += 1
+        return self.field
 
 def main():
     game = Game()
@@ -125,7 +149,7 @@ def main():
             print("No available moves left, game over.")
             break
 
-        print("L, R, U, D - move")
+        print("W, A, S, D - move")
         print("Q - exit")
 
         try:
@@ -133,13 +157,13 @@ def main():
         except (EOFError, KeyboardInterrupt):
             break
 
-        if c in ('l', 'L'):
+        if c in ('a', 'A'):
             game.move_left()
-        elif c in ('r', 'R'):
-            game.move_right()
-        elif c in ('u', 'U'):
-            game.move_up()
         elif c in ('d', 'D'):
+            game.move_right()
+        elif c in ('w', 'W'):
+            game.move_up()
+        elif c in ('s', 'S'):
             game.move_down()
         elif c in ('q', 'Q'):
             break
