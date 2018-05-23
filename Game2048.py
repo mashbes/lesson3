@@ -2,38 +2,6 @@ import numpy as np
 import random
 import curses
 
-class Table:
-    def __init__(self, board):
-        curses.initscr()
-        curses.noecho()
-        win = curses.newwin(280, 280, 0, 0)
-        win.keypad = (0)
-        win.border(0)
-
-        game = Game(4, win)
-
-        for i in range(1, 16):
-            win.addstr(i, 70, "||" )
-            win.addstr(i, 140, "||")
-            win.addstr(i, 210, "||")
-            if i in [4, 8, 12]:
-                win.addstr(i, 1, "=== === === ===")
-
-        if not game.has_moves():
-            win.addstr(140, 140, "+++ RIP +++ GAME OVER +++")
-            break
-
-
-    def title(self, board):
-        self.board.addstr(0, 74, '====  ')
-        self.board.addstr(1, 74, '2048  ')
-        self.board.addstr(2, 74, '====  ')
-        self.board.addstr(3, 74, 'SCORE:')
-        self.board.addstr(4, 74, '      ')
-
-
-
-
 
 class Game:
     def __init__(self, row=4, col=4):
